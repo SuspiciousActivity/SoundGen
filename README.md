@@ -48,4 +48,4 @@ START
 END
 ```
 
-Notice how this time, I used 0s to 1s, but the total length is still 6s! SoundGen automatically repeats your sound until it reaches the specified time, here 6s.
+Notice how this time, I used 0s to 1s, but the total length is still 6s! SoundGen automatically repeats your sound until it reaches the specified time, here 6s. You can also pipe the generated sound directly into other programs: Just change it to `OUT -` and you can use a command like `java -jar SoundGen.jar file.txt | ffplay -i -`.
