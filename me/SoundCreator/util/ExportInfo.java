@@ -15,6 +15,8 @@ public class ExportInfo {
 	private int outSampleLen;
 	private AudioFormat audioFormat;
 
+	private boolean persistentTime;
+
 	ExportInfo() {
 	}
 
@@ -87,6 +89,14 @@ public class ExportInfo {
 
 	void setOutFile(File outFile) {
 		this.outFile = outFile;
+	}
+
+	public boolean isPersistentTime() {
+		return persistentTime;
+	}
+
+	void setPersistentTime(boolean persistentTime) {
+		this.persistentTime = persistentTime;
 	}
 
 }

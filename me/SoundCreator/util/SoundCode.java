@@ -34,8 +34,6 @@ public class SoundCode {
 		ExportInfo exportInfo = new ExportInfo();
 		exportRead: for (String s : funcCode) {
 			String op = getOperator(s);
-			if (op == null)
-				break;
 			switch (op) {
 			case "OUT":
 			case "FILE":
@@ -55,6 +53,11 @@ public class SoundCode {
 			case "LENGTH": {
 				String lenInfo = s.substring(op.length() + 1).trim();
 				exportInfo.setOutSampleLen(parseLen(lenInfo, exportInfo.getAudioFormat()));
+				break;
+			}
+			case "PERSTIME":
+			case "PT": {
+				exportInfo.setPersistentTime(true);
 				break;
 			}
 			case "START": {
@@ -96,8 +99,9 @@ public class SoundCode {
 			se.getBindings(ScriptContext.GLOBAL_SCOPE).put("res", res);
 
 			try {
-				se.eval("\n" + "for (var i = 0; i < len; i++) {\n" + "	var x = i / _div_;\n" + "	res[i] = "
-						+ s.substring(split[0].length() + split[1].length() + 2) + ";\n" + "}");
+				String xSetter = exportInfo.isPersistentTime() ? ("(i + " + (min / sampleSizeInBytes) + ")") : "i";
+				se.eval("\n" + "for (var i = 0; i < len; i++) {\n" + "	var x = " + xSetter + " / _div_;\n"
+						+ "	res[i] = " + s.substring(split[0].length() + split[1].length() + 2) + ";\n" + "}");
 				for (int i = 0; i < len; i++) {
 					int b = (int) (res[i] * Short.MAX_VALUE);
 //					for (int j = 0; j < sampleSizeInBytes; j++)
@@ -120,7 +124,7 @@ public class SoundCode {
 	private static String getOperator(String s) {
 		int idx = s.indexOf(' ');
 		if (idx < 0)
-			return null;
+			return s;
 		return s.substring(0, idx).toUpperCase();
 	}
 
