@@ -10,7 +10,7 @@ The first few lines consist of meta information, that is:
 - The sample rate (such as 48000)
 - The length of the sound (for example 6s)
 
-After that, you can basically start typing functions. In one line, first enter the start time, then the end time, then the function with 'x' as the variable. 'x' will be in seconds, meaning if you enter `0s 1s sin(x)` this will result in "plotting" `sin(x)` from 0 to 1 and mapping it to the sound from 0 to 1 seconds. Functions are always plotted starting from 0, meaning `1s 2s sin(x)` will plot `sin(x)` from 0 to 1, but map it to 1 to 2 seconds. Functions *should* only range from -1 to 1, if they don't they will overflow. You could create a saw wave with that.
+After that, you can basically start typing functions. In one line, first enter the start time, then the end time, then the function with 'x' as the variable. 'x' will be in seconds, meaning if you enter `0s 1s sin(x)` this will result in "plotting" `sin(x)` from 0 to 1 and mapping it to the sound from 0 to 1 seconds. Functions are, by default, plotted starting from 0, meaning `1s 2s sin(x)` will plot `sin(x)` from 0 to 1, but map it to 1 to 2 seconds. You can change this behavior by adding the command `PT` or `PERSTIME` at the beginning of the file to keep the time persistent. Functions *should* only range from -1 to 1, if they don't they will overflow. You could create a saw wave with that.
 
 # Predefined functions
 There are more functions available than just `sin(x)`!
