@@ -81,7 +81,8 @@ public class SoundCode {
 		byte[] bytes = new byte[maxLen];
 		se.getBindings(ScriptContext.GLOBAL_SCOPE).put("_div_", exportInfo.getAudioFormat().getSampleRate());
 
-		System.out.println("Applying functions...");
+		if (!exportInfo.redirectToStdout())
+			exportInfo.log("Applying functions...");
 		for (String s : funcCode) {
 			if (s.startsWith("#"))
 				continue;
@@ -108,7 +109,7 @@ public class SoundCode {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Saving...");
+		exportInfo.log("Saving...");
 		try {
 			exportInfo.save(bytes);
 		} catch (IOException e) {

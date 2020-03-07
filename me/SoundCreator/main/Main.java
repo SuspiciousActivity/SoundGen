@@ -13,8 +13,6 @@ import me.SoundCreator.util.SoundCode;
 public class Main {
 
 	public static void main(String[] args) {
-		if (System.console() == null)
-			System.exit(2);
 		List<String> funcCode = null;
 		if (args.length == 1) {
 			try {
@@ -25,6 +23,8 @@ public class Main {
 				System.exit(1);
 			}
 		} else {
+			if (System.console() == null)
+				System.exit(2);
 			try (Scanner scanner = new Scanner(System.in)) {
 				funcCode = new ArrayList<String>();
 				while (scanner.hasNextLine()) {

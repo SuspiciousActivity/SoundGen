@@ -22,23 +22,26 @@ public class ExportInfo {
 		return getOutFile() != null && getAudioFormat() != null && getOutSampleLen() > 0;
 	}
 
+	public boolean redirectToStdout() {
+		return outFile != null && outFile.getName().equals("-");
+	}
+
 	public void save(byte[] bytes) throws IOException {
 		int byteSampleLen = bytes.length;
 		if (byteSampleLen > getOutSampleLen()) {
-			System.out.println("The input functions result in a longer sound than the specified export length.");
-			System.out.println("Extending export length to fit everything in. ("
+			log("The input functions result in a longer sound than the specified export length.");
+			log("Extending export length to fit everything in. ("
 					+ (byteSampleLen / getAudioFormat().getSampleRate() / (getAudioFormat().getSampleSizeInBits() / 8))
 					+ "s)");
 			setOutSampleLen(byteSampleLen);
 		} else if (byteSampleLen < getOutSampleLen()) { // repetition needed
 			if (getOutSampleLen() % byteSampleLen != 0) {
 				setOutSampleLen((getOutSampleLen() / byteSampleLen + 1) * byteSampleLen);
-				System.out.println("The export length is not a multiple of the input functions result.");
-				System.out.println(
-						"This would make the sound seem like it was cut off, extending export length to the next multiple. ("
-								+ (getOutSampleLen() / getAudioFormat().getSampleRate()
-										/ (getAudioFormat().getSampleSizeInBits() / 8))
-								+ "s)");
+				log("The export length is not a multiple of the input functions result.");
+				log("This would make the sound seem like it was cut off, extending export length to the next multiple. ("
+						+ (getOutSampleLen() / getAudioFormat().getSampleRate()
+								/ (getAudioFormat().getSampleSizeInBits() / 8))
+						+ "s)");
 			}
 			byte[] newBytes = new byte[getOutSampleLen()];
 			for (int i = 0; i < getOutSampleLen(); i += byteSampleLen) {
@@ -46,9 +49,20 @@ public class ExportInfo {
 			}
 			bytes = newBytes;
 		}
-		AudioSystem.write(new AudioInputStream(new ByteArrayInputStream(bytes), getAudioFormat(), getOutSampleLen()),
-				Type.WAVE, getOutFile());
-		System.out.println("Saved!");
+		if (redirectToStdout())
+			AudioSystem.write(
+					new AudioInputStream(new ByteArrayInputStream(bytes), getAudioFormat(), getOutSampleLen()),
+					Type.WAVE, System.out);
+		else
+			AudioSystem.write(
+					new AudioInputStream(new ByteArrayInputStream(bytes), getAudioFormat(), getOutSampleLen()),
+					Type.WAVE, getOutFile());
+		log("Saved!");
+	}
+
+	public void log(String s) {
+		if (!redirectToStdout())
+			System.out.println(s);
 	}
 
 	public AudioFormat getAudioFormat() {
